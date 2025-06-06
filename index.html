@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#222222" />
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Seenly - Mi historial visual</title>
+</head>
+<body>
+  <header>
+    <h1>📺 Seenly</h1>
+    <p>Tu historial visual de películas, series y documentales</p>
+  </header>
+
+  <main>
+    <form id="add-form">
+      <input type="text" id="title" placeholder="Añadir título..." required />
+      <select id="type">
+        <option value="película">Película</option>
+        <option value="serie">Serie</option>
+        <option value="documental">Documental</option>
+      </select>
+      <button type="submit">➕ Añadir</button>
+    </form>
+
+    <section id="content-list"></section>
+  </main>
+
+  <footer>
+    <p>© 2025 Seenly · Funciona offline</p>
+  </footer>
+
+  <script src="script.js" defer></script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('🛠️ Service Worker registrado:', reg.scope))
+      .catch(err => console.error('❌ Error al registrar el Service Worker:', err));
+  }
+</script>
+
+</body>
+</html>
