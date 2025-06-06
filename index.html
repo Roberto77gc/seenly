@@ -7,16 +7,33 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="stylesheet" href="style.css" />
   <title>Seenly - Mi historial visual v1</title>
+  <style>
+    #btn-instalar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      z-index: 9999;
+      display: none;
+      transition: background-color 0.3s ease;
+    }
+
+    #btn-instalar:hover {
+      background-color: #27ae60;
+    }
+  </style>
 </head>
 <body>
   <header>
     <h1>📺 Seenly</h1>
     <p>Tu historial visual de películas, series y documentales</p>
-    <div class="install-wrapper">
-  <button id="btn-instalar" style="display: none;" class="btn-instalar">
-    📲 Instalar Seenly
-  </button>
-</div>
   </header>
 
   <main>
@@ -37,14 +54,16 @@
     <p>© 2025 Seenly · Funciona offline</p>
   </footer>
 
+  <!-- Botón flotante de instalación -->
+  <button id="btn-instalar">📲 Instalar Seenly</button>
+
   <script src="script.js" defer></script>
   <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('🛠️ Service Worker registrado:', reg.scope))
-      .catch(err => console.error('❌ Error al registrar el Service Worker:', err));
-  }
-</script>
-
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('🛠️ Service Worker registrado:', reg.scope))
+        .catch(err => console.error('❌ Error al registrar el Service Worker:', err));
+    }
+  </script>
 </body>
 </html>
