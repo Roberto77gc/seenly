@@ -50,3 +50,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderItems();
 });
+let deferredPrompt;
+const installBtn = document.getElementById('btn-instalar');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'inline-block';
+});
+
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('✅ Usuario instaló la app');
+    } else {
+      console.log('❌ Usuario canceló la instalación');
+    }
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  }
+});
