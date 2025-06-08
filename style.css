@@ -124,3 +124,44 @@ footer {
 .btn-instalar:hover {
   background-color: #27ae60;
 }
+
+/* Botón flotante de instalación PWA */
+#btn-instalar {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 12px 20px;
+  font-size: 15px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 1000;
+  display: none;
+  transition: all 0.3s ease;
+}
+
+#btn-instalar:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+}
+
+/* Añadir espacio al final para que el botón no tape contenido */
+body::after {
+  content: '';
+  display: block;
+  height: 80px;
+}
+
+/* Mejora en móviles */
+@media (max-width: 480px) {
+  #btn-instalar {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+}
