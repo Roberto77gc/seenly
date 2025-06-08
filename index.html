@@ -33,31 +33,38 @@
   </style>
 </head>
 <body>
-  <header>
+  <header role="banner">
     <h1>📺 Seenly</h1>
     <p>Tu historial visual de películas, series y documentales</p>
   </header>
 
-  <main>
-    <form id="add-form">
-      <input type="text" id="title" placeholder="Añadir título..." required />
-      <select id="type">
+  <main role="main">
+    <form id="add-form" aria-label="Formulario para añadir contenido">
+      <label for="title" class="visually-hidden">Título</label>
+      <input type="text" id="title" name="title" placeholder="Añadir título..." required />
+
+      <label for="type" class="visually-hidden">Tipo de contenido</label>
+      <select id="type" name="type">
         <option value="película">Película</option>
         <option value="serie">Serie</option>
         <option value="documental">Documental</option>
       </select>
-      <button type="submit">➕ Añadir</button>
+
+      <button type="submit" aria-label="Añadir nuevo contenido">➕ Añadir</button>
     </form>
 
-    <section id="content-list"></section>
+    <!-- NUEVO: Contenedor para estadísticas -->
+    <section id="stats" aria-label="Estadísticas de contenido" style="margin-bottom: 1rem; text-align: center; font-size: 0.95rem; color: #555;"></section>
+
+    <section id="content-list" aria-label="Lista de contenido añadido"></section>
   </main>
 
-  <footer>
+  <footer role="contentinfo">
     <p>© 2025 Seenly · Funciona offline</p>
   </footer>
 
   <!-- Botón flotante de instalación -->
-  <button id="btn-instalar">📲 Instalar Seenly</button>
+  <button id="btn-instalar" title="Instalar la aplicación Seenly" aria-label="Botón para instalar la app">📲 Instalar Seenly</button>
 
   <script src="script.js" defer></script>
   <script>
@@ -69,3 +76,4 @@
   </script>
 </body>
 </html>
+

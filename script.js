@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const titleInput = document.getElementById('title');
   const typeSelect = document.getElementById('type');
   const contentList = document.getElementById('content-list');
+  const statsContainer = document.getElementById('stats'); // Nuevo para estadísticas
 
   let items = JSON.parse(localStorage.getItem('seenly-items')) || [];
 
@@ -10,21 +11,43 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('seenly-items', JSON.stringify(items));
   }
 
+  function updateStats() {
+    const total = items.length;
+    const peliculas = items.filter(i => i.type === 'película').length;
+    const series = items.filter(i => i.type === 'serie').length;
+    const documentales = items.filter(i => i.type === 'documental').length;
+
+    statsContainer.innerHTML = `
+      <strong>Estadísticas:</strong><br>
+      Total: ${total} · Películas: ${peliculas} · Series: ${series} · Documentales: ${documentales}
+    `;
+  }
+
   function renderItems() {
     contentList.innerHTML = '';
     if (items.length === 0) {
       contentList.innerHTML = '<p>No hay contenido añadido todavía.</p>';
+      statsContainer.innerHTML = ''; // Limpia estadísticas si no hay nada
       return;
     }
+
     items.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'card';
-      card.innerHTML = `
-        <span>${item.title} <em>(${item.type})</em></span>
-        <button data-index="${index}">🗑️</button>
-      `;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.setAttribute('data-index', index);
+      deleteBtn.innerHTML = '🗑️<span class="visually-hidden">Eliminar</span>';
+
+      const titleSpan = document.createElement('span');
+      titleSpan.innerHTML = `${item.title} <em>(${item.type})</em>`;
+
+      card.appendChild(titleSpan);
+      card.appendChild(deleteBtn);
       contentList.appendChild(card);
     });
+
+    updateStats(); // Llama a las estadísticas al renderizar
   }
 
   form.addEventListener('submit', (e) => {
@@ -50,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderItems();
 });
+
+// Gestión del botón de instalación PWA
 let deferredPrompt;
 const installBtn = document.getElementById('btn-instalar');
 
@@ -72,3 +97,4 @@ installBtn.addEventListener('click', async () => {
     installBtn.style.display = 'none';
   }
 });
+
