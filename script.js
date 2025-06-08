@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const typeSelect = document.getElementById('type');
   const contentList = document.getElementById('content-list');
   const statsContainer = document.getElementById('stats');
+  const exportBtn = document.getElementById('btn-exportar');
+  const importInput = document.getElementById('input-importar'); // NUEVO
 
   let items = JSON.parse(localStorage.getItem('seenly-items')) || [];
 
@@ -94,6 +96,45 @@ document.addEventListener('DOMContentLoaded', () => {
     saveItems();
     renderItems();
   });
+
+  // Exportar JSON
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'seenly-export.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  // ✅ Importar JSON
+  if (importInput) {
+    importInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const importedItems = JSON.parse(e.target.result);
+          if (Array.isArray(importedItems)) {
+            items = importedItems;
+            saveItems();
+            renderItems();
+            alert('✅ Contenido importado correctamente.');
+          } else {
+            throw new Error();
+          }
+        } catch {
+          alert('❌ El archivo no es válido.');
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
 
   // Guardado automático cada 15 segundos
   setInterval(() => {
