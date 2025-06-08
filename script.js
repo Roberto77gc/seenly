@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const titleInput = document.getElementById('title');
   const typeSelect = document.getElementById('type');
   const contentList = document.getElementById('content-list');
-  const statsContainer = document.getElementById('stats'); // Nuevo para estadísticas
+  const statsContainer = document.getElementById('stats');
 
   let items = JSON.parse(localStorage.getItem('seenly-items')) || [];
 
@@ -27,27 +27,44 @@ document.addEventListener('DOMContentLoaded', () => {
     contentList.innerHTML = '';
     if (items.length === 0) {
       contentList.innerHTML = '<p>No hay contenido añadido todavía.</p>';
-      statsContainer.innerHTML = ''; // Limpia estadísticas si no hay nada
+      statsContainer.innerHTML = '';
       return;
     }
 
     items.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'card';
-
-      const deleteBtn = document.createElement('button');
-      deleteBtn.setAttribute('data-index', index);
-      deleteBtn.innerHTML = '🗑️<span class="visually-hidden">Eliminar</span>';
+      if (item.visto) {
+        card.classList.add('visto');
+      }
 
       const titleSpan = document.createElement('span');
       titleSpan.innerHTML = `${item.title} <em>(${item.type})</em>`;
 
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.gap = '0.5rem';
+
+      const vistoBtn = document.createElement('button');
+      vistoBtn.setAttribute('data-index', index);
+      vistoBtn.setAttribute('data-action', 'visto');
+      vistoBtn.textContent = '✔';
+      vistoBtn.setAttribute('aria-label', 'Marcar como visto');
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.setAttribute('data-index', index);
+      deleteBtn.setAttribute('data-action', 'borrar');
+      deleteBtn.innerHTML = '🗑️<span class="visually-hidden">Eliminar</span>';
+
+      actions.appendChild(vistoBtn);
+      actions.appendChild(deleteBtn);
+
       card.appendChild(titleSpan);
-      card.appendChild(deleteBtn);
+      card.appendChild(actions);
       contentList.appendChild(card);
     });
 
-    updateStats(); // Llama a las estadísticas al renderizar
+    updateStats();
   }
 
   form.addEventListener('submit', (e) => {
@@ -56,25 +73,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const type = typeSelect.value;
     if (title === '') return;
 
-    items.push({ title, type });
+    items.push({ title, type, visto: false });
     saveItems();
     renderItems();
     form.reset();
   });
 
   contentList.addEventListener('click', (e) => {
-    if (e.target.tagName === 'BUTTON') {
-      const index = e.target.getAttribute('data-index');
+    const index = e.target.getAttribute('data-index');
+    const action = e.target.getAttribute('data-action');
+
+    if (action === 'borrar') {
       items.splice(index, 1);
-      saveItems();
-      renderItems();
+    } else if (action === 'visto') {
+      items[index].visto = !items[index].visto;
+    } else {
+      return;
     }
+
+    saveItems();
+    renderItems();
   });
+
+  // Guardado automático cada 15 segundos
+  setInterval(() => {
+    saveItems();
+    console.log('💾 Guardado automático');
+  }, 15000);
 
   renderItems();
 });
 
-// Gestión del botón de instalación PWA
+// Botón de instalación PWA
 let deferredPrompt;
 const installBtn = document.getElementById('btn-instalar');
 
