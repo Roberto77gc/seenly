@@ -1,6 +1,6 @@
 :root {
   --color-bg: #f9f9f9;
-  --color-text: #222; /* más oscuro para mejor contraste */
+  --color-text: #333;
   --color-primary: #4a90e2;
   --color-secondary: #ffffff;
   --color-accent: #27ae60;
@@ -36,7 +36,7 @@ header h1 {
 
 header p {
   font-size: 1rem;
-  color: #555; /* mejor contraste */
+  color: #666;
 }
 
 form {
@@ -51,16 +51,8 @@ select {
   flex: 1;
   padding: 0.6rem;
   font-size: 1rem;
-  border: 1px solid #aaa;
+  border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #fff;
-  color: #222;
-}
-
-input[type="text"]:focus-visible,
-select:focus-visible {
-  outline: 3px solid #4a90e2;
-  outline-offset: 2px;
 }
 
 button {
@@ -74,10 +66,8 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover,
-button:focus-visible {
+button:hover {
   background-color: #219150;
-  outline: none;
 }
 
 #content-list {
@@ -91,7 +81,7 @@ button:focus-visible {
   padding: 0.8rem;
   border-left: 5px solid var(--color-primary);
   border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -108,17 +98,11 @@ button:focus-visible {
   font-size: 0.9rem;
 }
 
-.card button:hover,
-.card button:focus-visible {
-  background-color: #c0392b;
-  outline: none;
-}
-
 footer {
   text-align: center;
   margin-top: 3rem;
   font-size: 0.8rem;
-  color: #555;
+  color: #777;
 }
 
 .install-wrapper {
@@ -136,8 +120,9 @@ footer {
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
+
 .btn-instalar:hover {
   background-color: #27ae60;
 }
@@ -161,22 +146,50 @@ footer {
   transition: all 0.3s ease;
 }
 
-#btn-instalar:hover,
-#btn-instalar:focus-visible {
+#btn-instalar:hover {
   background-color: #27ae60;
   transform: translateY(-2px);
-  outline: none;
 }
 
-/* Añadir espacio al final para que el botón no tape contenido */
+/* Espacio para que el botón flotante no tape contenido */
 body::after {
   content: '';
   display: block;
   height: 80px;
 }
 
-/* Mejora en móviles */
+/* RESPONSIVE MOBILE OPTIMIZATION */
 @media (max-width: 480px) {
+  body {
+    padding: 0.5rem;
+  }
+
+  form {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  input[type="text"],
+  select {
+    width: 100%;
+    font-size: 0.95rem;
+  }
+
+  button {
+    font-size: 0.95rem;
+    width: 100%;
+  }
+
+  .card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .card button {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+  }
+
   #btn-instalar {
     bottom: 16px;
     right: 16px;
@@ -184,3 +197,4 @@ body::after {
     font-size: 14px;
   }
 }
+
