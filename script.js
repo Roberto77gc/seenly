@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const contentList = document.getElementById('content-list');
   const statsContainer = document.getElementById('stats');
   const exportBtn = document.getElementById('btn-exportar');
-  const importInput = document.getElementById('input-importar'); // NUEVO
+  const importInput = document.getElementById('input-importar');
 
   let items = JSON.parse(localStorage.getItem('seenly-items')) || [];
 
@@ -23,6 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
       <strong>Estadísticas:</strong><br>
       Total: ${total} · Películas: ${peliculas} · Series: ${series} · Documentales: ${documentales}
     `;
+  }
+
+  function mostrarAviso(mensaje, tipo = 'success') {
+    const aviso = document.createElement('div');
+    aviso.textContent = mensaje;
+    aviso.style.position = 'fixed';
+    aviso.style.bottom = '100px';
+    aviso.style.left = '50%';
+    aviso.style.transform = 'translateX(-50%)';
+    aviso.style.padding = '10px 20px';
+    aviso.style.borderRadius = '8px';
+    aviso.style.backgroundColor = tipo === 'success' ? '#2ecc71' : '#e74c3c';
+    aviso.style.color = 'white';
+    aviso.style.boxShadow = '0 4px 10px rgba(0,0,0,0.15)';
+    aviso.style.zIndex = 2000;
+    document.body.appendChild(aviso);
+    setTimeout(() => aviso.remove(), 3000);
   }
 
   function renderItems() {
@@ -110,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ✅ Importar JSON
+  // Importar JSON
   if (importInput) {
     importInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
@@ -124,12 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
             items = importedItems;
             saveItems();
             renderItems();
-            alert('✅ Contenido importado correctamente.');
+            mostrarAviso('✅ Contenido importado correctamente.');
           } else {
             throw new Error();
           }
         } catch {
-          alert('❌ El archivo no es válido.');
+          mostrarAviso('❌ El archivo no es válido.', 'error');
         }
       };
       reader.readAsText(file);
@@ -168,4 +185,5 @@ installBtn.addEventListener('click', async () => {
     installBtn.style.display = 'none';
   }
 });
+
 
