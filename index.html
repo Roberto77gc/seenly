@@ -59,6 +59,16 @@
       <button id="btn-exportar" aria-label="Exportar contenido como archivo JSON">📤 Exportar JSON</button>
       <input type="file" id="input-importar" accept=".json" aria-label="Importar archivo JSON" style="margin-left: 1rem;" />
     </div>
+    <!-- NUEVO: Filtros de visualización -->
+<div id="filters" style="text-align: center; margin: 1rem 0;">
+  <button data-filter="todos">📋 Todos</button>
+  <button data-filter="película">🎬 Películas</button>
+  <button data-filter="serie">📺 Series</button>
+  <button data-filter="documental">🎞️ Documentales</button>
+  <button data-filter="visto">✔ Vistos</button>
+  <button data-filter="pendiente">⏳ Pendientes</button>
+</div>
+
 
     <section id="content-list" aria-label="Lista de contenido añadido"></section>
   </main>

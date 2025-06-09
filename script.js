@@ -6,9 +6,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const statsContainer = document.getElementById('stats');
   const exportBtn = document.getElementById('btn-exportar');
   const importInput = document.getElementById('input-importar');
-  const toast = document.getElementById('toast'); // NUEVO
+  const toast = document.getElementById('toast');
+  const filtersContainer = document.getElementById('filters');
 
   let items = JSON.parse(localStorage.getItem('seenly-items')) || [];
+  let filtroActivo = 'todos';
 
   function saveItems() {
     localStorage.setItem('seenly-items', JSON.stringify(items));
@@ -31,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.textContent = mensaje;
     toast.style.backgroundColor = tipo === 'success' ? '#2ecc71' : '#e74c3c';
     toast.style.display = 'block';
-
     setTimeout(() => {
       toast.style.display = 'none';
     }, 3000);
@@ -39,13 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderItems() {
     contentList.innerHTML = '';
-    if (items.length === 0) {
-      contentList.innerHTML = '<p>No hay contenido añadido todavía.</p>';
+    const filtrados = items.filter(item => {
+      if (filtroActivo === 'todos') return true;
+      if (filtroActivo === 'visto') return item.visto;
+      if (filtroActivo === 'pendiente') return !item.visto;
+      return item.type === filtroActivo;
+    });
+
+    if (filtrados.length === 0) {
+      contentList.innerHTML = '<p>No hay contenido que coincida con el filtro.</p>';
       statsContainer.innerHTML = '';
       return;
     }
 
-    items.forEach((item, index) => {
+    filtrados.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'card';
       if (item.visto) {
@@ -97,15 +105,17 @@ document.addEventListener('DOMContentLoaded', () => {
   contentList.addEventListener('click', (e) => {
     const index = e.target.getAttribute('data-index');
     const action = e.target.getAttribute('data-action');
+    if (index === null || action === null) return;
+
+    const realIndex = items.findIndex((_, i) => i === Number(index));
+    if (realIndex === -1) return;
 
     if (action === 'borrar') {
-      items.splice(index, 1);
+      items.splice(realIndex, 1);
       mostrarAviso('🗑️ Contenido eliminado.', 'success');
     } else if (action === 'visto') {
-      items[index].visto = !items[index].visto;
-      mostrarAviso(items[index].visto ? '👁️ Marcado como visto.' : '🚫 Marcado como no visto.');
-    } else {
-      return;
+      items[realIndex].visto = !items[realIndex].visto;
+      mostrarAviso(items[realIndex].visto ? '👁️ Marcado como visto.' : '🚫 Marcado como no visto.');
     }
 
     saveItems();
@@ -147,6 +157,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
       reader.readAsText(file);
+    });
+  }
+
+  // Filtros
+  if (filtersContainer) {
+    filtersContainer.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        filtroActivo = e.target.getAttribute('data-filter');
+        renderItems();
+      }
     });
   }
 
