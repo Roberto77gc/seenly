@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statsContainer = document.getElementById('stats');
   const exportBtn = document.getElementById('btn-exportar');
   const importInput = document.getElementById('input-importar');
+  const toast = document.getElementById('toast'); // NUEVO
 
   let items = JSON.parse(localStorage.getItem('seenly-items')) || [];
 
@@ -26,20 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function mostrarAviso(mensaje, tipo = 'success') {
-    const aviso = document.createElement('div');
-    aviso.textContent = mensaje;
-    aviso.style.position = 'fixed';
-    aviso.style.bottom = '100px';
-    aviso.style.left = '50%';
-    aviso.style.transform = 'translateX(-50%)';
-    aviso.style.padding = '10px 20px';
-    aviso.style.borderRadius = '8px';
-    aviso.style.backgroundColor = tipo === 'success' ? '#2ecc71' : '#e74c3c';
-    aviso.style.color = 'white';
-    aviso.style.boxShadow = '0 4px 10px rgba(0,0,0,0.15)';
-    aviso.style.zIndex = 2000;
-    document.body.appendChild(aviso);
-    setTimeout(() => aviso.remove(), 3000);
+    if (!toast) return;
+    toast.textContent = mensaje;
+    toast.style.backgroundColor = tipo === 'success' ? '#2ecc71' : '#e74c3c';
+    toast.style.display = 'block';
+
+    setTimeout(() => {
+      toast.style.display = 'none';
+    }, 3000);
   }
 
   function renderItems() {
@@ -96,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveItems();
     renderItems();
     form.reset();
+    mostrarAviso('✅ Contenido añadido.');
   });
 
   contentList.addEventListener('click', (e) => {
@@ -104,8 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (action === 'borrar') {
       items.splice(index, 1);
+      mostrarAviso('🗑️ Contenido eliminado.', 'success');
     } else if (action === 'visto') {
       items[index].visto = !items[index].visto;
+      mostrarAviso(items[index].visto ? '👁️ Marcado como visto.' : '🚫 Marcado como no visto.');
     } else {
       return;
     }
@@ -114,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderItems();
   });
 
-  // Exportar JSON
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
       const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
@@ -124,10 +121,10 @@ document.addEventListener('DOMContentLoaded', () => {
       a.download = 'seenly-export.json';
       a.click();
       URL.revokeObjectURL(url);
+      mostrarAviso('📤 Exportación completada.');
     });
   }
 
-  // Importar JSON
   if (importInput) {
     importInput.addEventListener('change', (event) => {
       const file = event.target.files[0];
@@ -153,7 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Guardado automático cada 15 segundos
   setInterval(() => {
     saveItems();
     console.log('💾 Guardado automático');
@@ -185,5 +181,3 @@ installBtn.addEventListener('click', async () => {
     installBtn.style.display = 'none';
   }
 });
-
-
