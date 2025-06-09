@@ -54,11 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     filtrados.forEach((item, index) => {
-      const card = document.createElement('div');
-      card.className = 'card';
-      if (item.visto) {
-        card.classList.add('visto');
-      }
+    const card = document.createElement('div');
+    card.classList.add('card'); // ✅ USO CORRECTO
+    if (item.visto) {
+    card.classList.add('visto');
+  }
+
+
 
       const titleSpan = document.createElement('span');
       titleSpan.innerHTML = `${item.title} <em>(${item.type})</em>`;

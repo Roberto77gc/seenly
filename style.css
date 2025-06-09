@@ -86,6 +86,7 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
   transition: box-shadow 0.3s ease, transform 0.2s ease;
 }
 
@@ -114,6 +115,24 @@ button:hover {
   background-color: #c0392b;
 }
 
+/* Tarjeta marcada como vista */
+.card.visto {
+  background-color: #f0f0f0;
+  opacity: 0.8;
+  filter: grayscale(0.3);
+  border-left: 6px solid #999;
+}
+
+.card.visto::before {
+  content: "✔";
+  font-size: 1.2rem;
+  color: #27ae60;
+  position: absolute;
+  top: 10px;
+  right: 12px;
+}
+
+/* Footer */
 footer {
   text-align: center;
   margin-top: 3rem;
@@ -121,6 +140,7 @@ footer {
   color: #777;
 }
 
+/* Botón instalación */
 .install-wrapper {
   display: flex;
   justify-content: center;
@@ -214,6 +234,7 @@ body::after {
     font-size: 14px;
   }
 }
+
 /* ACCESIBILIDAD: Ocultar visualmente pero mantener accesible */
 .visually-hidden {
   position: absolute !important;
@@ -225,12 +246,5 @@ body::after {
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
-}
-
-/* Tarjeta marcada como vista */
-.card.visto {
-  opacity: 0.6;
-  filter: grayscale(0.4);
-  border-left: 6px solid #999;
 }
 
