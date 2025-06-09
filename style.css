@@ -213,12 +213,14 @@ body::after {
   border-bottom: 3px solid transparent;
   cursor: pointer;
   transition: border-color 0.3s;
+  color: var(--color-text); /* <-- AÑADE ESTA LÍNEA */
 }
 
 .auth-tabs button.active {
   border-color: var(--color-primary);
   color: var(--color-primary);
 }
+
 
 .auth-form {
   display: flex;
