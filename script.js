@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('add-form');
   const titleInput = document.getElementById('title');
   const typeSelect = document.getElementById('type');
+  const vistoCheckbox = document.getElementById('checkbox-visto'); // ✅ NUEVO
   const contentList = document.getElementById('content-list');
   const statsContainer = document.getElementById('stats');
   const exportBtn = document.getElementById('btn-exportar');
@@ -54,13 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     filtrados.forEach((item, index) => {
-    const card = document.createElement('div');
-    card.classList.add('card'); // ✅ USO CORRECTO
-    if (item.visto) {
-    card.classList.add('visto');
-  }
-
-
+      const card = document.createElement('div');
+      card.classList.add('card');
+      if (item.visto) {
+        card.classList.add('visto');
+      }
 
       const titleSpan = document.createElement('span');
       titleSpan.innerHTML = `${item.title} <em>(${item.type})</em>`;
@@ -95,12 +94,15 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const title = titleInput.value.trim();
     const type = typeSelect.value;
+    const visto = vistoCheckbox.checked; // ✅ NUEVO
+
     if (title === '') return;
 
-    items.push({ title, type, visto: false });
+    items.push({ title, type, visto }); // ✅ NUEVO
     saveItems();
     renderItems();
     form.reset();
+    vistoCheckbox.checked = false; // ✅ NUEVO
     mostrarAviso('✅ Contenido añadido.');
   });
 
@@ -203,3 +205,4 @@ installBtn.addEventListener('click', async () => {
     installBtn.style.display = 'none';
   }
 });
+
