@@ -206,18 +206,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   btnTabLogin.addEventListener('click', () => {
-    btnTabLogin.classList.add('active');
-    btnTabRegister.classList.remove('active');
-    loginForm.classList.remove('hidden');
-    registerForm.classList.add('hidden');
-  });
+  btnTabLogin.classList.add('active');
+  btnTabRegister.classList.remove('active');
+  loginForm.classList.remove('hidden');
+  registerForm.classList.add('hidden');
+});
 
-  btnTabRegister.addEventListener('click', () => {
-    btnTabRegister.classList.add('active');
-    btnTabLogin.classList.remove('active');
-    registerForm.classList.remove('hidden');
-    loginForm.classList.add('hidden');
-  });
+btnTabRegister.addEventListener('click', () => {
+  btnTabRegister.classList.add('active');
+  btnTabLogin.classList.remove('active');
+  registerForm.classList.remove('hidden');
+  loginForm.classList.add('hidden');
+});
+
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
