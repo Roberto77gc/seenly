@@ -1,10 +1,10 @@
 :root {
   --color-bg: #f9f9f9;
   --color-text: #333;
-  --color-primary: #4a90e2;
+  --color-primary: #3498db;
   --color-secondary: #ffffff;
-  --color-accent: #27ae60;
-  --color-footer: #ddd;
+  --color-accent: #2ecc71;
+  --color-danger: #e74c3c;
   --font-main: 'Segoe UI', sans-serif;
 }
 
@@ -67,7 +67,7 @@ button {
 }
 
 button:hover {
-  background-color: #219150;
+  background-color: #27ae60;
 }
 
 #content-list {
@@ -76,13 +76,12 @@ button:hover {
   gap: 0.75rem;
 }
 
-/* Mejora visual de las tarjetas */
 .card {
   background-color: var(--color-secondary);
   padding: 1rem;
   border-left: 6px solid var(--color-primary);
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -91,7 +90,7 @@ button:hover {
 }
 
 .card:hover {
-  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   transform: translateY(-2px);
 }
 
@@ -101,24 +100,21 @@ button:hover {
   color: var(--color-text);
 }
 
-/* Botón eliminar (🗑️) */
 .card button[data-action="borrar"] {
-  background-color: #e74c3c;
+  background-color: var(--color-danger);
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
   font-size: 0.9rem;
   color: #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
-  transition: background-color 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
 
 .card button[data-action="borrar"]:hover {
   background-color: #c0392b;
 }
 
-/* Botón marcar como visto (✔) */
 .card button[data-action="visto"] {
-  background-color: #2ecc71;
+  background-color: var(--color-accent);
   color: white;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
@@ -133,12 +129,12 @@ button:hover {
   transform: scale(1.05);
 }
 
-/* Tarjeta marcada como vista */
 .card.visto {
   background-color: #f0f0f0;
   opacity: 0.8;
   filter: grayscale(0.3);
   border-left: 6px solid #999;
+  animation: fadeSeen 0.4s ease-out;
 }
 
 .card.visto::before {
@@ -150,7 +146,6 @@ button:hover {
   right: 12px;
 }
 
-/* Footer */
 footer {
   text-align: center;
   margin-top: 3rem;
@@ -158,35 +153,11 @@ footer {
   color: #777;
 }
 
-/* Botón instalación */
-.install-wrapper {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
-.btn-instalar {
-  padding: 10px 24px;
-  background-color: #2ecc71;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.btn-instalar:hover {
-  background-color: #27ae60;
-}
-
-/* Botón flotante de instalación PWA */
 #btn-instalar {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: #2ecc71;
+  background-color: var(--color-accent);
   color: white;
   border: none;
   border-radius: 16px;
@@ -205,14 +176,99 @@ footer {
   transform: translateY(-2px);
 }
 
-/* Espacio para que el botón flotante no tape contenido */
 body::after {
   content: '';
   display: block;
   height: 80px;
 }
 
-/* RESPONSIVE MOBILE OPTIMIZATION */
+/* AUTENTICACIÓN */
+.auth-box {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #f5f5f5;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-tabs {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 0.75rem;
+  background: none;
+  border: none;
+  font-weight: bold;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.auth-tabs button.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-form input {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.auth-form button {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.auth-form button:hover {
+  background-color: #2980b9;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes fadeSeen {
+  0% {
+    transform: scale(0.97);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* RESPONSIVE MOBILE */
 @media (max-width: 480px) {
   body {
     padding: 0.5rem;
@@ -242,7 +298,6 @@ body::after {
 
   .card button {
     align-self: flex-end;
-    margin-top: 0.5rem;
   }
 
   #btn-instalar {
@@ -251,98 +306,4 @@ body::after {
     padding: 10px 16px;
     font-size: 14px;
   }
-}
-
-/* ACCESIBILIDAD: Ocultar visualmente pero mantener accesible */
-.visually-hidden {
-  position: absolute !important;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* ANIMACIÓN SUAVE AL CAMBIAR A VISTO */
-@keyframes fadeSeen {
-  0% {
-    transform: scale(0.97);
-    opacity: 0.3;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-}
-
-.card.visto {
-  background-color: #f0f0f0;
-  opacity: 0.8;
-  filter: grayscale(0.3);
-  border-left: 6px solid #999;
-  animation: fadeSeen 0.4s ease-out;
-}
-.auth-box {
-  max-width: 400px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background: #f5f5f5;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-.auth-tabs {
-  display: flex;
-  justify-content: space-around;
-  margin-bottom: 1rem;
-}
-
-.auth-tabs button {
-  flex: 1;
-  padding: 0.75rem;
-  background: none;
-  border: none;
-  font-weight: bold;
-  border-bottom: 3px solid transparent;
-  cursor: pointer;
-  transition: border-color 0.3s;
-}
-
-.auth-tabs button.active {
-  border-color: #3498db;
-  color: #3498db;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.auth-form input {
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-
-.auth-form button {
-  background-color: #3498db;
-  color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.auth-form button:hover {
-  background-color: #2980b9;
-}
-
-.hidden {
-  display: none !important;
 }
