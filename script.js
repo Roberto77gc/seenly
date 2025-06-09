@@ -1,28 +1,69 @@
+// script.js actualizado completo para Seenly con login/registro y sincronización por usuario
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAkujb9MVSBd12bH9McPyMqiZV9OyyeVzk",
+  authDomain: "seenly-70397.firebaseapp.com",
+  projectId: "seenly-70397",
+  storageBucket: "seenly-70397.appspot.com",
+  messagingSenderId: "38767262174",
+  appId: "1:38767262174:web:73ba88675669bb418f054f"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+let userId = null;
+let items = [];
+let filtroActivo = 'todos';
+
+const itemsRef = () => db.collection("seenly").doc(userId);
+
+async function cargarItemsRemotos() {
+  if (!userId) return;
+  try {
+    const doc = await itemsRef().get();
+    items = doc.exists ? doc.data().items || [] : [];
+  } catch (err) {
+    console.error("Error cargando desde Firestore", err);
+  }
+}
+
+async function guardarItemsRemotos() {
+  if (!userId) return;
+  try {
+    await itemsRef().set({ items });
+    console.log("📡 Datos sincronizados con Firestore");
+  } catch (err) {
+    console.error("Error guardando en Firestore", err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('add-form');
   const titleInput = document.getElementById('title');
   const typeSelect = document.getElementById('type');
-  const vistoCheckbox = document.getElementById('checkbox-visto'); // ✅ NUEVO
+  const vistoCheckbox = document.getElementById('checkbox-visto');
   const contentList = document.getElementById('content-list');
   const statsContainer = document.getElementById('stats');
   const exportBtn = document.getElementById('btn-exportar');
   const importInput = document.getElementById('input-importar');
   const toast = document.getElementById('toast');
   const filtersContainer = document.getElementById('filters');
+  const mainApp = document.getElementById('main-app');
 
-  let items = JSON.parse(localStorage.getItem('seenly-items')) || [];
-  let filtroActivo = 'todos';
-
-  function saveItems() {
-    localStorage.setItem('seenly-items', JSON.stringify(items));
-  }
+  const loginForm = document.getElementById('form-login');
+  const registerForm = document.getElementById('form-register');
+  const authContainer = document.getElementById('auth-container');
+  const btnTabLogin = document.getElementById('btn-tab-login');
+  const btnTabRegister = document.getElementById('btn-tab-register');
+  const userInfo = document.getElementById('user-info');
 
   function updateStats() {
     const total = items.length;
     const peliculas = items.filter(i => i.type === 'película').length;
     const series = items.filter(i => i.type === 'serie').length;
     const documentales = items.filter(i => i.type === 'documental').length;
-
     statsContainer.innerHTML = `
       <strong>Estadísticas:</strong><br>
       Total: ${total} · Películas: ${peliculas} · Series: ${series} · Documentales: ${documentales}
@@ -34,9 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.textContent = mensaje;
     toast.style.backgroundColor = tipo === 'success' ? '#2ecc71' : '#e74c3c';
     toast.style.display = 'block';
-    setTimeout(() => {
-      toast.style.display = 'none';
-    }, 3000);
+    setTimeout(() => toast.style.display = 'none', 3000);
   }
 
   function renderItems() {
@@ -57,9 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filtrados.forEach((item, index) => {
       const card = document.createElement('div');
       card.classList.add('card');
-      if (item.visto) {
-        card.classList.add('visto');
-      }
+      if (item.visto) card.classList.add('visto');
 
       const titleSpan = document.createElement('span');
       titleSpan.innerHTML = `${item.title} <em>(${item.type})</em>`;
@@ -90,99 +127,139 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStats();
   }
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const title = titleInput.value.trim();
     const type = typeSelect.value;
-    const visto = vistoCheckbox.checked; // ✅ NUEVO
+    const visto = vistoCheckbox.checked;
+    if (!title) return;
 
-    if (title === '') return;
-
-    items.push({ title, type, visto }); // ✅ NUEVO
-    saveItems();
+    items.push({ title, type, visto });
+    await guardarItemsRemotos();
     renderItems();
     form.reset();
-    vistoCheckbox.checked = false; // ✅ NUEVO
+    vistoCheckbox.checked = false;
     mostrarAviso('✅ Contenido añadido.');
   });
 
-  contentList.addEventListener('click', (e) => {
+  contentList.addEventListener('click', async (e) => {
     const index = e.target.getAttribute('data-index');
     const action = e.target.getAttribute('data-action');
     if (index === null || action === null) return;
 
-    const realIndex = items.findIndex((_, i) => i === Number(index));
-    if (realIndex === -1) return;
-
+    const realIndex = Number(index);
     if (action === 'borrar') {
       items.splice(realIndex, 1);
-      mostrarAviso('🗑️ Contenido eliminado.', 'success');
+      mostrarAviso('🗑️ Contenido eliminado.');
     } else if (action === 'visto') {
       items[realIndex].visto = !items[realIndex].visto;
       mostrarAviso(items[realIndex].visto ? '👁️ Marcado como visto.' : '🚫 Marcado como no visto.');
     }
 
-    saveItems();
+    await guardarItemsRemotos();
     renderItems();
   });
 
-  if (exportBtn) {
-    exportBtn.addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'seenly-export.json';
-      a.click();
-      URL.revokeObjectURL(url);
-      mostrarAviso('📤 Exportación completada.');
-    });
-  }
+  exportBtn.addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'seenly-export.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarAviso('📤 Exportación completada.');
+  });
 
-  if (importInput) {
-    importInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
+  importInput.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const importedItems = JSON.parse(e.target.result);
-          if (Array.isArray(importedItems)) {
-            items = importedItems;
-            saveItems();
-            renderItems();
-            mostrarAviso('✅ Contenido importado correctamente.');
-          } else {
-            throw new Error();
-          }
-        } catch {
-          mostrarAviso('❌ El archivo no es válido.', 'error');
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const importedItems = JSON.parse(e.target.result);
+        if (Array.isArray(importedItems)) {
+          items = importedItems;
+          await guardarItemsRemotos();
+          renderItems();
+          mostrarAviso('✅ Contenido importado correctamente.');
+        } else {
+          throw new Error();
         }
-      };
-      reader.readAsText(file);
-    });
-  }
-
-  // Filtros
-  if (filtersContainer) {
-    filtersContainer.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON') {
-        filtroActivo = e.target.getAttribute('data-filter');
-        renderItems();
+      } catch {
+        mostrarAviso('❌ El archivo no es válido.', 'error');
       }
-    });
-  }
+    };
+    reader.readAsText(file);
+  });
+
+  filtersContainer.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      filtroActivo = e.target.getAttribute('data-filter');
+      renderItems();
+    }
+  });
+
+  btnTabLogin.addEventListener('click', () => {
+    btnTabLogin.classList.add('active');
+    btnTabRegister.classList.remove('active');
+    loginForm.classList.remove('hidden');
+    registerForm.classList.add('hidden');
+  });
+
+  btnTabRegister.addEventListener('click', () => {
+    btnTabRegister.classList.add('active');
+    btnTabLogin.classList.remove('active');
+    registerForm.classList.remove('hidden');
+    loginForm.classList.add('hidden');
+  });
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch {
+      mostrarAviso('❌ Error al iniciar sesión', 'error');
+    }
+  });
+
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    try {
+      await auth.createUserWithEmailAndPassword(email, password);
+    } catch {
+      mostrarAviso('❌ Error al crear la cuenta', 'error');
+    }
+  });
+
+  auth.onAuthStateChanged(async user => {
+    if (user) {
+      userId = user.uid;
+      authContainer.style.display = 'none';
+      mainApp.style.display = 'block';
+      if (userInfo) userInfo.textContent = `Sesión iniciada como: ${user.email}`;
+      await cargarItemsRemotos();
+      renderItems();
+    } else {
+      userId = null;
+      items = [];
+      mainApp.style.display = 'none';
+      authContainer.style.display = 'block';
+      if (userInfo) userInfo.textContent = '';
+    }
+  });
 
   setInterval(() => {
-    saveItems();
-    console.log('💾 Guardado automático');
+    if (userId) guardarItemsRemotos();
   }, 15000);
-
-  renderItems();
 });
 
-// Botón de instalación PWA
+// Instalación PWA
 let deferredPrompt;
 const installBtn = document.getElementById('btn-instalar');
 
@@ -196,13 +273,11 @@ installBtn.addEventListener('click', async () => {
   if (deferredPrompt) {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      console.log('✅ Usuario instaló la app');
-    } else {
-      console.log('❌ Usuario canceló la instalación');
-    }
+    console.log(outcome === 'accepted' ? '✅ Instalación aceptada' : '❌ Instalación cancelada');
     deferredPrompt = null;
     installBtn.style.display = 'none';
   }
 });
+
+
 
