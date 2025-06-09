@@ -1,5 +1,9 @@
 // script.js actualizado completo para Seenly con login/registro y sincronización por usuario
 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyAkujb9MVSBd12bH9McPyMqiZV9OyyeVzk",
   authDomain: "seenly-70397.firebaseapp.com",
@@ -9,21 +13,21 @@ const firebaseConfig = {
   appId: "1:38767262174:web:73ba88675669bb418f054f"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
 let userId = null;
 let items = [];
 let filtroActivo = 'todos';
 
-const itemsRef = () => db.collection("seenly").doc(userId);
+const itemsRef = () => doc(db, "seenly", userId);
 
 async function cargarItemsRemotos() {
   if (!userId) return;
   try {
-    const doc = await itemsRef().get();
-    items = doc.exists ? doc.data().items || [] : [];
+    const docSnap = await getDoc(itemsRef());
+    items = docSnap.exists() ? docSnap.data().items || [] : [];
   } catch (err) {
     console.error("Error cargando desde Firestore", err);
   }
@@ -32,7 +36,7 @@ async function cargarItemsRemotos() {
 async function guardarItemsRemotos() {
   if (!userId) return;
   try {
-    await itemsRef().set({ items });
+    await setDoc(itemsRef(), { items });
     console.log("📡 Datos sincronizados con Firestore");
   } catch (err) {
     console.error("Error guardando en Firestore", err);
@@ -220,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
     try {
-      await auth.signInWithEmailAndPassword(email, password);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch {
       mostrarAviso('❌ Error al iniciar sesión', 'error');
     }
@@ -231,13 +235,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = document.getElementById('register-email').value;
     const password = document.getElementById('register-password').value;
     try {
-      await auth.createUserWithEmailAndPassword(email, password);
+      await createUserWithEmailAndPassword(auth, email, password);
     } catch {
       mostrarAviso('❌ Error al crear la cuenta', 'error');
     }
   });
 
-  auth.onAuthStateChanged(async user => {
+  onAuthStateChanged(auth, async user => {
     if (user) {
       userId = user.uid;
       authContainer.style.display = 'none';

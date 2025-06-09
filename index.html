@@ -14,7 +14,6 @@
     <p>Tu historial visual de películas, series y documentales</p>
   </header>
 
-  <!-- AUTENTICACIÓN: Login / Registro -->
   <section id="auth-container" class="auth-box" aria-label="Autenticación de usuario">
     <div class="auth-tabs">
       <button id="btn-tab-login" class="active" aria-selected="true">Iniciar sesión</button>
@@ -42,7 +41,6 @@
     </form>
   </section>
 
-  <!-- APLICACIÓN PRINCIPAL -->
   <main role="main" id="main-app" style="display: none;">
     <p id="user-info" style="text-align:center; margin: 1rem 0; font-size: 0.9rem; color: #555;"></p>
 
@@ -88,17 +86,11 @@
     <p>© 2025 Seenly · Funciona offline</p>
   </footer>
 
-  <!-- Botón flotante de instalación PWA -->
   <button id="btn-instalar" title="Instalar la aplicación Seenly" aria-label="Botón para instalar la app">📲 Instalar Seenly</button>
 
-  <!-- Toast de mensaje -->
-  <div id="toast" role="status" aria-live="polite" aria-atomic="true"
-       style="position: fixed; bottom: 90px; right: 20px; background-color: #2ecc71; color: white; padding: 10px 15px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: none; z-index: 9999;"></div>
+  <div id="toast" role="status" aria-live="polite" aria-atomic="true" style="position: fixed; bottom: 90px; right: 20px; background-color: #2ecc71; color: white; padding: 10px 15px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: none; z-index: 9999;"></div>
 
-  <!-- JS Principal -->
-  <script src="script.js" defer></script>
-
-  <!-- Registro del Service Worker -->
+  <script type="module" src="script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
@@ -108,3 +100,4 @@
   </script>
 </body>
 </html>
+

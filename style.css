@@ -1,6 +1,6 @@
 :root {
   --color-bg: #f9f9f9;
-  --color-text: #333;
+  --color-text: #222;
   --color-primary: #3498db;
   --color-secondary: #ffffff;
   --color-accent: #2ecc71;
@@ -24,6 +24,7 @@ body {
   margin: auto;
 }
 
+/* ENCABEZADO */
 header {
   text-align: center;
   margin-bottom: 2rem;
@@ -39,6 +40,7 @@ header p {
   color: #666;
 }
 
+/* FORMULARIOS */
 form {
   display: flex;
   gap: 0.5rem;
@@ -52,7 +54,8 @@ select {
   padding: 0.6rem;
   font-size: 1rem;
   border: 1px solid #ccc;
-  border-radius: 5px;
+  border-radius: 6px;
+  background-color: white;
 }
 
 button {
@@ -60,7 +63,7 @@ button {
   background-color: var(--color-accent);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -70,6 +73,7 @@ button:hover {
   background-color: #27ae60;
 }
 
+/* LISTADO DE CONTENIDO */
 #content-list {
   display: flex;
   flex-direction: column;
@@ -85,12 +89,12 @@ button:hover {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
   transition: box-shadow 0.3s ease, transform 0.2s ease;
+  position: relative;
 }
 
 .card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
 
@@ -100,28 +104,19 @@ button:hover {
   color: var(--color-text);
 }
 
+/* BOTONES INDIVIDUALES */
+.card button[data-action="visto"],
 .card button[data-action="borrar"] {
-  background-color: var(--color-danger);
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  color: #fff;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-}
-
-.card button[data-action="borrar"]:hover {
-  background-color: #c0392b;
-}
-
-.card button[data-action="visto"] {
-  background-color: var(--color-accent);
-  color: white;
   padding: 0.4rem 0.8rem;
   border-radius: 6px;
   font-size: 0.9rem;
   font-weight: bold;
+  color: #fff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.card button[data-action="visto"] {
+  background-color: var(--color-accent);
 }
 
 .card button[data-action="visto"]:hover {
@@ -129,23 +124,33 @@ button:hover {
   transform: scale(1.05);
 }
 
+.card button[data-action="borrar"] {
+  background-color: var(--color-danger);
+}
+
+.card button[data-action="borrar"]:hover {
+  background-color: #c0392b;
+}
+
+/* MARCADO COMO VISTO */
 .card.visto {
-  background-color: #f0f0f0;
-  opacity: 0.8;
-  filter: grayscale(0.3);
-  border-left: 6px solid #999;
+  background-color: #eaeaea;
+  opacity: 0.9;
+  filter: grayscale(0.2);
+  border-left: 6px solid #aaa;
   animation: fadeSeen 0.4s ease-out;
 }
 
 .card.visto::before {
   content: "✔";
-  font-size: 1.2rem;
-  color: #27ae60;
+  font-size: 1.3rem;
+  color: var(--color-accent);
   position: absolute;
   top: 10px;
-  right: 12px;
+  right: 14px;
 }
 
+/* FOOTER */
 footer {
   text-align: center;
   margin-top: 3rem;
@@ -153,6 +158,7 @@ footer {
   color: #777;
 }
 
+/* BOTÓN INSTALAR PWA */
 #btn-instalar {
   position: fixed;
   bottom: 20px;
@@ -241,6 +247,7 @@ body::after {
   background-color: #2980b9;
 }
 
+/* CLASES AUXILIARES */
 .hidden {
   display: none !important;
 }
@@ -264,11 +271,11 @@ body::after {
   }
   100% {
     transform: scale(1);
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }
 
-/* RESPONSIVE MOBILE */
+/* RESPONSIVE */
 @media (max-width: 480px) {
   body {
     padding: 0.5rem;
